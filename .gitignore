@@ -3,7 +3,7 @@
 .env
 
 #VSCODE
-
+AZURE_CREDENTIALS.*
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
