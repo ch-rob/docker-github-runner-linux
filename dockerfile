@@ -5,9 +5,9 @@ FROM ubuntu:22.04
 ARG RUNNER_VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 
-LABEL Author="Marcel L"
-LABEL Email="pwd9000@hotmail.co.uk"
-LABEL GitHub="https://github.com/Pwd9000-ML"
+LABEL Author="Chad V"
+LABEL Email="chad.voelker@microsoft.com"
+LABEL GitHub="https://github.com/ch-rob"
 LABEL BaseImage="ubuntu:20.04"
 LABEL RunnerVersion=${RUNNER_VERSION}
 
@@ -16,7 +16,20 @@ RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
 
 # install the packages and dependencies along with jq so we can parse JSON (add additional packages as necessary)
 RUN apt-get install -y --no-install-recommends \
-    curl nodejs wget unzip vim git azure-cli jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev python3-pip
+    curl nodejs wget unzip vim git jq lsb-release gnupg build-essential libssl-dev libffi-dev python3 python3-venv python3-dev python3-pip
+
+# RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+# RUN apt-get update -y && apt-get upgrade -y
+
+# Need to first install the repo (from https://github.com/Azure/azure-cli/issues/23915) # Still: Unable to locate package azure-cli
+# From here: https://stackoverflow.com/questions/62030499/azure-cli-in-a-docker-container
+RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.asc.gpg && \
+    CLI_REPO=$(lsb_release -cs) && \
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ ${CLI_REPO} main" \
+    > /etc/apt/sources.list.d/azure-cli.list && \
+    apt-get update && \
+    apt-get install -y azure-cli && \
+    rm -rf /var/lib/apt/lists/*
 
 # cd into the user directory, download and unzip the github actions runner
 RUN cd /home/docker && mkdir actions-runner && cd actions-runner \

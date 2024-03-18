@@ -3,11 +3,11 @@ version: '3.8'
 
 services:
   runner:
-    image: pwd9000-github-runner-lin:latest
+    image: ch-rob-github-runner-linux:latest
     build:
       context: .
       args:
-        RUNNER_VERSION: '2.292.0'
+        RUNNER_VERSION: '2.314.1' #Changed from 2.292.0 due to issue here: https://github.com/actions/runner/issues/1584, Changed from 2.294.0 due to issue here https://github.com/actions/runner/issues/993
     environment:
       GH_TOKEN: ${GH_TOKEN}
       GH_OWNER: ${GH_OWNER}
